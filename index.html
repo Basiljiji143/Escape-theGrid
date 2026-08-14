@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Escape the Grid — GameCraft 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="vignette-overlay"></div>
+
+<!-- WELCOME SCREEN -->
+<section id="screen-welcome" class="screen active">
+  <div class="panel panel--welcome">
+    <p class="eyebrow">GameCraft 2026</p>
+    <h1 class="title-display">Escape the Grid</h1>
+    <p class="subtitle">Only your torchlight stands between you and the dark.</p>
+
+    <form id="welcome-form" novalidate>
+      <label for="player-name" class="field-label">Enter your name</label>
+      <input id="player-name" type="text" maxlength="20" autocomplete="off" placeholder="e.g. Balachandran" />
+      <p class="field-error" id="name-error" role="alert" aria-live="polite">Please enter your name to begin.</p>
+      <button type="submit" class="btn btn--primary">Continue</button>
+    </form>
+  </div>
+</section>
+
+<!-- INSTRUCTIONS SCREEN -->
+<section id="screen-instructions" class="screen">
+  <div class="panel panel--instructions">
+    <p class="eyebrow">Briefing</p>
+    <h2 class="title-sub">Find the keys. Find the door. Don't be found.</h2>
+
+    <ul class="instructions-list">
+      <li><span class="ins-icon">🔦</span> Your torch reveals only the tiles near you — the rest stays hidden.</li>
+      <li><span class="ins-icon">🗝️</span> Collect keys scattered through the maze (<strong>+50 pts each</strong>) — you need enough to unlock the exit.</li>
+      <li><span class="ins-icon">◆</span> Checkpoints award bonus points (<strong>+20 pts each</strong>) but aren't required to escape.</li>
+      <li><span class="ins-icon">👁</span> A Watcher patrols the dark. It's only visible inside your torchlight — touching it <strong>costs 15 pts</strong> and stuns you briefly.</li>
+      <li><span class="ins-icon">🚪</span> Escaping with enough keys awards <strong>+100 pts</strong> plus <strong>+5 pts per second remaining</strong>.</li>
+      <li><span class="ins-icon">⏱</span> You have exactly 60 seconds. The clock starts the moment you press Start below and stops the game automatically at 0.</li>
+    </ul>
+
+    <div class="controls-hint">
+      <span class="key-chip">↑</span><span class="key-chip">↓</span><span class="key-chip">←</span><span class="key-chip">→</span>
+      <span class="controls-label">or WASD to move</span>
+    </div>
+
+    <button id="btn-start" class="btn btn--primary">Start — 60 Seconds</button>
+  </div>
+</section>
+
+<!-- GAMEPLAY SCREEN -->
+<section id="screen-game" class="screen">
+  <div class="hud">
+    <div class="hud-block">
+      <span class="hud-label">Player</span>
+      <span class="hud-value" id="hud-player">—</span>
+    </div>
+    <div class="hud-block hud-block--center">
+      <span class="hud-label">Time</span>
+      <span class="hud-value hud-timer" id="hud-timer">60</span>
+    </div>
+    <div class="hud-block">
+      <span class="hud-label">Score</span>
+      <span class="hud-value" id="hud-score">0</span>
+    </div>
+    <button id="btn-mute" class="btn-icon" aria-label="Mute sound" aria-pressed="false">🔊</button>
+  </div>
+
+  <div class="hud-sub">
+    <span id="hud-keys">Keys: 0 / 0</span>
+    <span id="hud-status" class="hud-status" aria-live="polite"></span>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="game-canvas" tabindex="0" aria-label="Maze game area"></canvas>
+  </div>
+</section>
+
+<!-- RESULT SCREEN -->
+<section id="screen-result" class="screen">
+  <div class="panel panel--result">
+    <p class="eyebrow" id="result-eyebrow">Time's Up</p>
+    <h2 class="title-sub" id="result-headline">Well played.</h2>
+
+    <div class="result-stats">
+      <div class="stat">
+        <span class="stat-label">Final Score</span>
+        <span class="stat-value" id="result-score">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Personal Best</span>
+        <span class="stat-value" id="result-best">0</span>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button id="btn-replay" class="btn btn--primary">Play Again</button>
+      <button id="btn-leaderboard" class="btn btn--ghost">View Leaderboard</button>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD SCREEN -->
+<section id="screen-leaderboard" class="screen">
+  <div class="panel panel--leaderboard">
+    <p class="eyebrow">This Device</p>
+    <h2 class="title-sub">Leaderboard</h2>
+    <ol id="leaderboard-list" class="leaderboard-list"></ol>
+    <div class="result-actions">
+      <button id="btn-back-result" class="btn btn--primary">Back</button>
+      <button id="btn-clear-scores" class="btn btn--ghost">Clear Local Data</button>
+    </div>
+  </div>
+</section>
+
+<script src="js/maze.js"></script>
+<script src="js/fog.js"></script>
+<script src="js/player.js"></script>
+<script src="js/watcher.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/score.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
