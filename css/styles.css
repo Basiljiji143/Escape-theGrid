@@ -313,6 +313,42 @@ body {
   outline: none;
 }
 
+/* TOUCH D-PAD (mobile/touch fallback for keyboard controls) */
+.dpad {
+  display: none;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(2, 56px);
+  gap: 8px;
+  justify-content: center;
+  touch-action: none;
+}
+
+.dpad-btn {
+  background: var(--color-panel-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.dpad-btn:active { background: var(--color-torch); color: #14100a; }
+
+.dpad-up { grid-column: 2; grid-row: 1; }
+.dpad-left { grid-column: 1; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down { grid-column: 2; grid-row: 2; }
+
+/* Show the D-pad on touch-capable devices and small screens, where a
+   physical keyboard usually isn't available. */
+@media (pointer: coarse), (max-width: 640px) {
+  .dpad { display: grid; }
+}
+
 /* RESULT */
 .result-stats {
   display: flex;

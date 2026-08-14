@@ -205,6 +205,28 @@
     heldDirs.delete(dir);
   });
 
+  // ---------- Touch / on-screen D-pad ----------
+  const dpad = document.getElementById("dpad");
+  if (dpad) {
+    const pressDir = (e) => {
+      const dir = e.target.closest(".dpad-btn")?.dataset.dir;
+      if (!dir) return;
+      e.preventDefault();
+      heldDirs.add(dir);
+    };
+    const releaseDir = (e) => {
+      const dir = e.target.closest(".dpad-btn")?.dataset.dir;
+      if (!dir) return;
+      e.preventDefault();
+      heldDirs.delete(dir);
+    };
+    dpad.addEventListener("touchstart", pressDir, { passive: false });
+    dpad.addEventListener("touchend", releaseDir, { passive: false });
+    dpad.addEventListener("touchcancel", releaseDir, { passive: false });
+    dpad.addEventListener("mousedown", pressDir);
+    window.addEventListener("mouseup", releaseDir);
+  }
+
   function processMovement(dt) {
     if (gameEnded || heldDirs.size === 0) return;
     moveAccumulator += dt;
