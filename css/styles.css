@@ -311,42 +311,21 @@ body {
   background: #050607;
   display: block;
   outline: none;
+  touch-action: none;
 }
 
-/* TOUCH D-PAD (mobile/touch fallback for keyboard controls) */
-.dpad {
+.swipe-hint {
   display: none;
-  grid-template-columns: repeat(3, 56px);
-  grid-template-rows: repeat(2, 56px);
-  gap: 8px;
-  justify-content: center;
-  touch-action: none;
+  color: var(--color-text-dim);
+  font-size: 12px;
+  text-align: center;
+  margin: 0;
 }
 
-.dpad-btn {
-  background: var(--color-panel-raised);
-  border: 1px solid var(--color-line);
-  border-radius: 10px;
-  color: var(--color-text);
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
-
-.dpad-btn:active { background: var(--color-torch); color: #14100a; }
-
-.dpad-up { grid-column: 2; grid-row: 1; }
-.dpad-left { grid-column: 1; grid-row: 2; }
-.dpad-right { grid-column: 3; grid-row: 2; }
-.dpad-down { grid-column: 2; grid-row: 2; }
-
-/* Show the D-pad on touch-capable devices and small screens, where a
-   physical keyboard usually isn't available. */
+/* Shown only on touch-capable devices/small screens, where swipe replaces
+   keyboard movement. */
 @media (pointer: coarse), (max-width: 640px) {
-  .dpad { display: grid; }
+  .swipe-hint { display: block; }
 }
 
 /* RESULT */

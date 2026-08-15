@@ -205,26 +205,34 @@
     heldDirs.delete(dir);
   });
 
-  // ---------- Touch / on-screen D-pad ----------
-  const dpad = document.getElementById("dpad");
-  if (dpad) {
-    const pressDir = (e) => {
-      const dir = e.target.closest(".dpad-btn")?.dataset.dir;
-      if (!dir) return;
-      e.preventDefault();
-      heldDirs.add(dir);
-    };
-    const releaseDir = (e) => {
-      const dir = e.target.closest(".dpad-btn")?.dataset.dir;
-      if (!dir) return;
-      e.preventDefault();
-      heldDirs.delete(dir);
-    };
-    dpad.addEventListener("touchstart", pressDir, { passive: false });
-    dpad.addEventListener("touchend", releaseDir, { passive: false });
-    dpad.addEventListener("touchcancel", releaseDir, { passive: false });
-    dpad.addEventListener("mousedown", pressDir);
-    window.addEventListener("mouseup", releaseDir);
+  // ---------- Touch swipe (mobile fallback for keyboard movement) ----------
+  const SWIPE_THRESHOLD = 24; // px; smaller swipes are ignored to avoid accidental moves
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+
+  canvas.addEventListener("touchstart", (e) => {
+    if (gameEnded || e.touches.length !== 1) return;
+    swipeStartX = e.touches[0].clientX;
+    swipeStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  canvas.addEventListener("touchend", (e) => {
+    if (gameEnded) return;
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    const dx = touch.clientX - swipeStartX;
+    const dy = touch.clientY - swipeStartY;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_THRESHOLD) return;
+
+    const dir = Math.abs(dx) > Math.abs(dy)
+      ? (dx > 0 ? "E" : "W")
+      : (dy > 0 ? "S" : "N");
+    attemptMove(dir);
+  }, { passive: true });
+
+  function attemptMove(dir) {
+    const moved = Player.tryMove(player, level.grid, dir);
+    if (moved) handleArrival();
   }
 
   function processMovement(dt) {
@@ -235,8 +243,7 @@
 
     // Take the most recently pressed direction still held (simple: iterate set)
     const dir = [...heldDirs][heldDirs.size - 1];
-    const moved = Player.tryMove(player, level.grid, dir);
-    if (moved) handleArrival();
+    attemptMove(dir);
   }
 
   function handleArrival() {
