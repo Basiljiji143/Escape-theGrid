@@ -206,18 +206,26 @@
   });
 
   // ---------- Touch swipe (mobile fallback for keyboard movement) ----------
-  const SWIPE_THRESHOLD = 24; // px; smaller swipes are ignored to avoid accidental moves
+  const canvasWrap = document.querySelector(".canvas-wrap");
+  const dpad = document.getElementById("dpad");
+  const SWIPE_THRESHOLD = 24;
   let swipeStartX = 0;
   let swipeStartY = 0;
 
-  canvas.addEventListener("touchstart", (e) => {
+  canvasWrap.addEventListener("touchstart", (e) => {
     if (gameEnded || e.touches.length !== 1) return;
+    e.preventDefault();
     swipeStartX = e.touches[0].clientX;
     swipeStartY = e.touches[0].clientY;
-  }, { passive: true });
+  }, { passive: false });
 
-  canvas.addEventListener("touchend", (e) => {
+  canvasWrap.addEventListener("touchmove", (e) => {
+    if (!gameEnded) e.preventDefault();
+  }, { passive: false });
+
+  canvasWrap.addEventListener("touchend", (e) => {
     if (gameEnded) return;
+    e.preventDefault();
     const touch = e.changedTouches[0];
     if (!touch) return;
     const dx = touch.clientX - swipeStartX;
@@ -228,7 +236,31 @@
       ? (dx > 0 ? "E" : "W")
       : (dy > 0 ? "S" : "N");
     attemptMove(dir);
-  }, { passive: true });
+  }, { passive: false });
+
+  canvasWrap.addEventListener("touchcancel", (e) => {
+    e.preventDefault();
+  }, { passive: false });
+
+  const pressDir = (e) => {
+    const dir = e.target.closest(".dpad-btn")?.dataset.dir;
+    if (!dir) return;
+    e.preventDefault();
+    heldDirs.add(dir);
+  };
+
+  const releaseDir = (e) => {
+    const dir = e.target.closest(".dpad-btn")?.dataset.dir;
+    if (!dir) return;
+    e.preventDefault();
+    heldDirs.delete(dir);
+  };
+
+  dpad.addEventListener("touchstart", pressDir, { passive: false });
+  dpad.addEventListener("touchend", releaseDir, { passive: false });
+  dpad.addEventListener("touchcancel", releaseDir, { passive: false });
+  dpad.addEventListener("mousedown", pressDir);
+  window.addEventListener("mouseup", releaseDir);
 
   function attemptMove(dir) {
     const moved = Player.tryMove(player, level.grid, dir);
