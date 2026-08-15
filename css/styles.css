@@ -349,7 +349,6 @@ body {
   grid-template-rows: repeat(2, 48px);
   gap: 6px;
   transform: translateY(-50%);
-  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -364,15 +363,21 @@ body {
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
+  opacity: 0.35;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
   pointer-events: auto;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
-.dpad:has(.dpad-btn:active),
-.dpad:focus-within { opacity: 1; }
-.dpad-btn:active { background: var(--color-torch); color: #14100a; }
+.dpad-btn.active,
+.dpad-btn:active,
+.dpad-btn:focus-visible {
+  opacity: 1;
+  background: var(--color-torch);
+  color: #14100a;
+}
 .dpad-up { grid-column: 2; grid-row: 1; }
 .dpad-left { grid-column: 1; grid-row: 2; }
 .dpad-right { grid-column: 3; grid-row: 2; }

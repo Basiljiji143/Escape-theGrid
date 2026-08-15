@@ -79,8 +79,16 @@
     osc.stop(audioCtx.currentTime + duration);
   }
   const sfx = {
-    key: () => beep(660, 0.18, "triangle", 0.07),
-    checkpoint: () => beep(440, 0.12, "sine", 0.05),
+    move: () => beep(180, 0.045, "square", 0.018),
+    key: () => {
+      beep(660, 0.12, "triangle", 0.07);
+      setTimeout(() => beep(880, 0.16, "triangle", 0.06), 70);
+    },
+    checkpoint: () => {
+      beep(440, 0.1, "sine", 0.05);
+      setTimeout(() => beep(660, 0.12, "sine", 0.05), 80);
+      setTimeout(() => beep(880, 0.16, "sine", 0.05), 160);
+    },
     hit: () => beep(120, 0.25, "sawtooth", 0.08),
     exit: () => beep(880, 0.3, "triangle", 0.08),
     warning: () => beep(300, 0.1, "square", 0.04),
@@ -211,6 +219,18 @@
   const SWIPE_THRESHOLD = 24;
   let swipeStartX = 0;
   let swipeStartY = 0;
+  const dpadFlashTimers = new Map();
+
+  function flashDpadButton(direction) {
+    const button = dpad.querySelector(`[data-dir="${direction}"]`);
+    if (!button) return;
+    button.classList.add("active");
+    clearTimeout(dpadFlashTimers.get(direction));
+    dpadFlashTimers.set(direction, setTimeout(() => {
+      button.classList.remove("active");
+      dpadFlashTimers.delete(direction);
+    }, 180));
+  }
 
   canvasWrap.addEventListener("touchstart", (e) => {
     if (gameEnded || e.touches.length !== 1) return;
@@ -235,6 +255,7 @@
     const dir = Math.abs(dx) > Math.abs(dy)
       ? (dx > 0 ? "E" : "W")
       : (dy > 0 ? "S" : "N");
+    flashDpadButton(dir);
     attemptMove(dir);
   }, { passive: false });
 
@@ -246,6 +267,11 @@
     const dir = e.target.closest(".dpad-btn")?.dataset.dir;
     if (!dir) return;
     e.preventDefault();
+    flashDpadButton(dir);
+    const button = e.target.closest(".dpad-btn");
+    clearTimeout(dpadFlashTimers.get(dir));
+    dpadFlashTimers.delete(dir);
+    button.classList.add("active");
     heldDirs.add(dir);
   };
 
@@ -253,6 +279,10 @@
     const dir = e.target.closest(".dpad-btn")?.dataset.dir;
     if (!dir) return;
     e.preventDefault();
+    const button = e.target.closest(".dpad-btn");
+    clearTimeout(dpadFlashTimers.get(dir));
+    dpadFlashTimers.delete(dir);
+    button.classList.remove("active");
     heldDirs.delete(dir);
   };
 
@@ -264,7 +294,10 @@
 
   function attemptMove(dir) {
     const moved = Player.tryMove(player, level.grid, dir);
-    if (moved) handleArrival();
+    if (moved) {
+      sfx.move();
+      handleArrival();
+    }
   }
 
   function processMovement(dt) {
