@@ -20,6 +20,7 @@ A top-down maze escape game where visibility is limited to a torchlight radius a
 
 ## Controls
 - Arrow keys or WASD to move.
+- On mobile or touch-capable devices, swipe the maze to move one tile or use the floating D-pad.
 - Mute button (top-right of HUD) toggles sound.
 
 ## Scoring Rules
@@ -56,7 +57,7 @@ No build step required.
 - Movement is grid-snapped rather than smoothly interpolated, by design, to keep collision/scoring simple and deterministic.
 - Watcher patrol is non-chasing (wanders corridors) rather than pathfinding toward the player, to keep the hazard fair and avoidable.
 - Internet dependency: Google Fonts (Cinzel/Inter/JetBrains Mono) are loaded from a CDN for typography. If offline, the browser falls back to the specified system/serif/monospace fonts and the game remains fully playable — no gameplay logic depends on network access.
-- No touch/mobile controls; keyboard (arrow keys / WASD) only.
+- Mobile movement uses one-tile swipe gestures and a floating D-pad; touch controls have not been tested on every device/browser combination.
 
 ## Libraries and Asset Credits
 - Fonts: Cinzel, Inter, JetBrains Mono — via Google Fonts (open license).
